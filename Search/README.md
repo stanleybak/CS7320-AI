@@ -3,7 +3,7 @@
 
 ## Contents
 
-* Assignment: [Solving a maze using a goal-based Agent](https://colab.research.google.com/github/mhahsler/CS7320-AI/blob/master/Search/Maze.ipynb)
+* Assignment: [Solving a maze using a goal-based Agent](https://colab.research.google.com/github/stanleybak/CS7320-AI/blob/master/Search/Maze.ipynb)
 
 
 

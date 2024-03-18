@@ -1,14 +1,54 @@
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import math
+import random
+
+np.set_printoptions(precision=2)
+
+# make the results repeatable
+np.random.seed(352)
+
+def random_tours(n):
+    """Create two random tours with n cities"""
+    
+    tour = list(range(n))
+    np.random.shuffle(tour)
+
+    # pick random index to split
+    split = np.random.randint(0, n-1)
+    tour1 = tour[:split]
+    tour2 = tour[split:]
+    
+
+    return(tour)
+
 def get_state_centroids():
     # Read state data
-    states = gpd.read_file('https://www2.census.gov/geo/tiger/GENZ2021/shp/cb_2021_us_state_20m.zip')
+
+    # load pickled data from states.pkl if it exists
+    try:
+        states = pd.read_pickle('states.pkl')
+        print('Loaded from states.pkl')
+    except:        
+        states = gpd.read_file('https://www2.census.gov/geo/tiger/GENZ2021/shp/cb_2021_us_state_20m.zip')
+
+        # pickle (save) the data to states.pkl
+        states.to_pickle('states.pkl')
 
     # Filter out Alaska, Hawaii, and territories
     contiguous_usa = states[~states['STUSPS'].isin(['AK', 'HI', 'PR', 'GU', 'VI', 'MP', 'AS', 'DC'])]
 
     # Calculate centroids
+    # /home/stan/repositories/CS7320-AI/ComplexSearch/map.py:46: UserWarning: Geometry is in a geographic CRS. Results from 'centroid' are likely incorrect. Use 'GeoSeries.to_crs()' to re-project geometries to a projected CRS before this operation.
+   # centroids = contiguous_usa.geometry.centroid
+    # fix:
+    contiguous_usa = contiguous_usa.to_crs(epsg=2163)
+
+
     centroids = contiguous_usa.geometry.centroid
     contiguous_usa['centroid_lon'] = centroids.x
     contiguous_usa['centroid_lat'] = centroids.y
